@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Nuance - Catálogo Editável</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background-color: #0b0e14; 
+            color: #00ffc3;
+        }
+        
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            background: rgba(20, 25, 35, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #00ffc3;
+            box-shadow: 0 0 20px rgba(0, 255, 195, 0.2);
+            margin-bottom: 30px;
+        }
+
+        input { 
+            padding: 12px; margin: 10px 0; width: 100%; 
+            background: #1a1f29; border: 1px solid #333;
+            border-radius: 5px; color: #fff; box-sizing: border-box;
+        }
+
+        button { 
+            padding: 12px; margin: 10px 0; width: 100%; 
+            background: #00ffc3; color: #0b0e14;
+            border: none; border-radius: 5px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .card-produto {
+            background: #161b22;
+            border: 2px solid #00ffc3;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 255, 195, 0.1);
+        }
+
+        .card-id-visual {
+            font-size: 0.8rem;
+            color: #00ffc3;
+            font-weight: bold;
+            text-align: right;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .card-nome {
+            background: #fff;
+            color: #0b0e14;
+            padding: 15px 5px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 600px) {
+            .grid-produtos { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body onload="carregarDadosPlanilha()">
+
+<div class="container">
+    <h2>Enviar Dados</h2>
+    <form id="googleForm" target="hidden_iframe" onsubmit="replicarValor(); submitted=true;" action="https://docs.google.com/forms/d/e/1FAIpQLSch4Ii0nm2UXgIXY9WxzVagAX2PfmoXVvWDPMmDX1bFWzV_yg/formResponse" method="post">
+        <input type="text" id="inputPrincipal" name="entry.1894120511" placeholder="Escreva o pedido completo..." required>
+        <input type="hidden" id="inputReplicado" name="entry.646404687">
+        <button type="submit">Enviar Dados</button>
+    </form>
+</div>
+
+<div class="grid-produtos" id="gridCards">
+    <div class="card-produto" id="card-1">
+        <span class="card-id-visual" id="id-val-1">ID: --</span>
+        <div class="card-nome" id="nome-val-1">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-2">
+        <span class="card-id-visual" id="id-val-2">ID: --</span>
+        <div class="card-nome" id="nome-val-2">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-3">
+        <span class="card-id-visual" id="id-val-3">ID: --</span>
+        <div class="card-nome" id="nome-val-3">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-4">
+        <span class="card-id-visual" id="id-val-4">ID: --</span>
+        <div class="card-nome" id="nome-val-4">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-5">
+        <span class="card-id-visual" id="id-val-5">ID: --</span>
+        <div class="card-nome" id="nome-val-5">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-6">
+        <span class="card-id-visual" id="id-val-6">ID: --</span>
+        <div class="card-nome" id="nome-val-6">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-7">
+        <span class="card-id-visual" id="id-val-7">ID: --</span>
+        <div class="card-nome" id="nome-val-7">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-8">
+        <span class="card-id-visual" id="id-val-8">ID: --</span>
+        <div class="card-nome" id="nome-val-8">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-9">
+        <span class="card-id-visual" id="id-val-9">ID: --</span>
+        <div class="card-nome" id="nome-val-9">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-10">
+        <span class="card-id-visual" id="id-val-10">ID: --</span>
+        <div class="card-nome" id="nome-val-10">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-11">
+        <span class="card-id-visual" id="id-val-11">ID: --</span>
+        <div class="card-nome" id="nome-val-11">Vazio</div>
+    </div>
+    <div class="card-produto" id="card-12">
+        <span class="card-id-visual" id="id-val-12">ID: --</span>
+        <div class="card-nome" id="nome-val-12">Vazio</div>
+    </div>
+</div>
+
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('inputPrincipal').value=''; alert('Dados enviados com sucesso!'); submitted=false; }"></iframe>
+
+<script>
+    var submitted = false;
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLyfJ_DxYlM85wk6yabreWrfU6JPMY05-DWcbAvILym3bsNQsegVhTS5fkohmtwpWu7HzH6_4hoVLH/pub?output=csv";
+
+    function replicarValor() {
+        document.getElementById('inputReplicado').value = document.getElementById('inputPrincipal').value;
+    }
+
+    function parseCSVLine(line) {
+        const result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') inQuotes = !inQuotes;
+            else if (char === ',' && !inQuotes) { result.push(cur); cur = ''; }
+            else cur += char;
+        }
+        result.push(cur);
+        return result;
+    }
+
+    async function carregarDadosPlanilha() {
+        try {
+            const response = await fetch(csvUrl + "&t=" + Date.now());
+            const data = await response.text();
+            const linhas = data.split(/\r?\n/);
+
+            for (let i = 1; i < linhas.length; i++) {
+                if (!linhas[i].trim()) continue;
+                const colunas = parseCSVLine(linhas[i]);
+
+                // Coluna C (Índice 2): Qual card editar (1-12)
+                // Coluna B (Índice 1): Nome do Produto
+                // Coluna F (Índice 5): ID visual (** do card)
+                
+                const cardAlvo = colunas[2] ? colunas[2].trim() : null;
+                const nomeProd = colunas[1] ? colunas[1].trim() : "";
+                const idVisual = colunas[5] ? colunas[5].trim() : "**";
+
+                if (cardAlvo && cardAlvo >= 1 && cardAlvo <= 12) {
+                    const elNome = document.getElementById(`nome-val-${cardAlvo}`);
+                    const elId = document.getElementById(`id-val-${cardAlvo}`);
+                    
+                    if (elNome) elNome.innerText = nomeProd;
+                    if (elId) elId.innerText = "ID: " + idVisual;
+                }
+            }
+        } catch (error) {
+            console.error("Erro ao carregar dados:", error);
+        }
+    }
+
+    // Atualiza os nomes e IDs dos cards a cada 10 segundos
+    setInterval(carregarDadosPlanilha, 10000);
+</script>
+
+</body>
+</html>
