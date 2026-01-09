@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Nuance - Coluna B Fixa</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            background-color: #0b0e14; 
+            color: #00ffc3;
+        }
+        
+        .container { 
+            width: 100%; 
+            max-width: 800px; 
+            background: rgba(20, 25, 35, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #00ffc3;
+            box-shadow: 0 0 20px rgba(0, 255, 195, 0.2);
+        }
+
+        input { 
+            padding: 12px; margin: 10px 0; width: 100%; 
+            background: #1a1f29; border: 1px solid #333;
+            border-radius: 5px; color: #fff; box-sizing: border-box;
+        }
+
+        button { 
+            padding: 12px; margin: 10px 0; width: 100%; 
+            background: #00ffc3; color: #0b0e14;
+            border: none; border-radius: 5px; font-weight: bold;
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        #campoPrincipalB {
+            margin-top: 20px;
+            width: 100%;
+            min-height: 500px;
+            background: #161b22;
+            border: 2px solid #00ffc3;
+            border-radius: 12px;
+            padding: 25px;
+            box-sizing: border-box;
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: bold;
+            line-height: 1.5;
+            white-space: pre-wrap; 
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .header-label {
+            width: 100%;
+            font-size: 0.9rem;
+            color: #00ffc3;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body onload="carregarCSV()">
+
+<div class="container">
+    <h2>Enviar Dados</h2>
+    <form id="googleForm" target="hidden_iframe" onsubmit="replicarValor(); submitted=true;" action="https://docs.google.com/forms/d/e/1FAIpQLSch4Ii0nm2UXgIXY9WxzVagAX2PfmoXVvWDPMmDX1bFWzV_yg/formResponse" method="post">
+        <input type="text" id="inputPrincipal" name="entry.1894120511" placeholder="Escreva o pedido completo..." required>
+        <input type="hidden" id="inputReplicado" name="entry.646404687">
+        <button type="submit">Enviar Dados</button>
+    </form>
+
+    <hr style="border: 0; height: 1px; background: #333; margin: 30px 0;">
+
+    <div class="header-label">(Pedidos Do Balcão)</div>
+    <div id="campoPrincipalB">Sincronizando Coluna B...</div>
+</div>
+
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted) { document.getElementById('inputPrincipal').value=''; setTimeout(carregarCSV, 2000); submitted=false; }"></iframe>
+
+<script>
+    var submitted = false;
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLyfJ_DxYlM85wk6yabreWrfU6JPMY05-DWcbAvILym3bsNQsegVhTS5fkohmtwpWu7HzH6_4hoVLH/pub?output=csv";
+
+    function replicarValor() {
+        document.getElementById('inputReplicado').value = document.getElementById('inputPrincipal').value;
+    }
+
+    // Função para tratar o CSV respeitando aspas e vírgulas internas
+    function parseCSVLine(line) {
+        const result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(cur);
+                cur = '';
+            } else {
+                cur += char;
+            }
+        }
+        result.push(cur);
+        return result;
+    }
+
+    async function carregarCSV() {
+        try {
+            const response = await fetch(csvUrl + "&cache=" + Date.now());
+            const data = await response.text();
+            
+            const linhas = data.split(/\r?\n/);
+            let textoAcumulado = "";
+
+            for (let i = 1; i < linhas.length; i++) {
+                if (!linhas[i].trim()) continue;
+
+                // Extrai as colunas de forma limpa
+                const colunas = parseCSVLine(linhas[i]);
+                
+                // O índice [1] é SEMPRE a Coluna B
+                if (colunas.length >= 2) {
+                    let conteudoB = colunas[1].trim();
+                    if (conteudoB) {
+                        textoAcumulado += conteudoB + "\n\n------------------------\n\n";
+                    }
+                }
+            }
+
+            document.getElementById('campoPrincipalB').innerText = textoAcumulado || "Aguardando novos dados na Coluna B...";
+        } catch (error) {
+            console.error("Erro na leitura:", error);
+        }
+    }
+
+    setInterval(carregarCSV, 5000);
+</script>
+
+</body>
+</html>
