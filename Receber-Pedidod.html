@@ -180,17 +180,21 @@
     const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLyfJ_DxYlM85wk6yabreWrfU6JPMY05-DWcbAvILym3bsNQsegVhTS5fkohmtwpWu7HzH6_4hoVLH/pub?output=csv";
 
     function replicarValor() {
-        let texto = document.getElementById('inputPrincipal').value;
-        if (texto.trim() !== "") {
-            // Garante que comece com 👉
-            if (!texto.startsWith("👉")) {
-                texto = "👉" + texto;
-            }
-            // Organiza conforme o seu exemplo (👉 em cada item e quebra de linha)
-            // Substitui espaços por quebra de linha e a mãozinha
-            texto = texto.split(" ").join("\n👉");
+        let texto = document.getElementById('inputPrincipal').value.trim();
+        if (texto !== "") {
+            // Se o usuário já digitou com 🚨, vamos separar por eles
+            // Se digitou com espaço, separamos por espaço
+            let separador = texto.includes("🚨") ? "" : " ";
+            
+            let itens = texto.split(separador).filter(function(i) { return i.trim() !== "" });
+            
+            // Monta o texto final colocando no início de cada linha
+            let textoFinal = itens.map(function(item) {
+                return "" + item.trim();
+            }).join("\n");
+
+            document.getElementById('inputReplicado').value = textoFinal;
         }
-        document.getElementById('inputReplicado').value = texto;
     }
 
     // Função para alternar o texto do botão
