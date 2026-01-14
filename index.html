@@ -396,6 +396,31 @@
             padding-bottom: 15px;
         }
 
+        /* Estilo melhorado para o botão Voltar-x */
+        .btn-voltar-cart {
+            background: #f8f8f8;
+            border: 1px solid #eee;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-voltar-cart:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .btn-voltar-cart:active {
+            transform: scale(0.95);
+        }
+
         .cart-item {
             display: flex;
             align-items: center;
@@ -461,12 +486,12 @@
             font-weight: 600;
             text-transform: uppercase;
             cursor: pointer;
+            margin-bottom: 30px;
         }
 
         .fusca-section {
-            margin-top: 40px;
-            opacity: 0.5;
-            filter: grayscale(1);
+            margin-top: 10px;
+            opacity: 0.7;
         }
 
         .fusca-title {
@@ -474,6 +499,8 @@
             text-transform: uppercase;
             color: #777;
             margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
 
         /* Estilos do NOVO Modal de Agradecimento */
@@ -636,15 +663,10 @@
 <div id="modal-carrinho">
     <div class="carrinho-header">
         <h2>Seu Pedido</h2>
-        <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">Voltar-&times;</button>
+        <button class="btn-voltar-cart" onclick="fecharCarrinho()">Voltar &times;</button>
     </div>
     
     <div id="itens-novos-lista"></div>
-
-    <div id="secao-fusca" class="fusca-section" style="display:none;">
-        <p class="fusca-title">Pedidos em Preparo</p>
-        <div id="itens-cozinha-lista"></div>
-    </div>
 
     <div class="cart-footer">
         <div class="total-container">
@@ -652,6 +674,11 @@
             <div>Total: R$ <span id="valor-total">0.00</span></div>
         </div>
         <button id="btn-envia-cozinha" class="btn-cozinha" onclick="enviarParaCozinha()">Enviar para a Cozinha</button>
+        
+        <div id="secao-fusca" class="fusca-section" style="display:none;">
+            <p class="fusca-title">Pedidos em Preparo</p>
+            <div id="itens-cozinha-lista"></div>
+        </div>
     </div>
 </div>
 
@@ -858,6 +885,26 @@
     function enviarMensagemCozinha() {
         const msg = document.getElementById('txt-obs-cozinha').value;
         if(msg.trim() !== "") {
+            
+            // --- LÓGICA DE ENVIO PARA O GOOGLE FORMULÁRIO (MENSAGEM COZINHA) ---
+            const urlForm = "https://docs.google.com/forms/d/e/1FAIpQLSdqJeSChWOP4EhrJZO3T2HERuGgU9Tjax7GVM-pTH0MBpVXGw/formResponse";
+            const idMesaColunaC = 100 + mesaAtual;
+            
+            const formData = new FormData();
+            formData.append("entry.1427616293", msg); // Coluna H
+            formData.append("entry.1646513792", idMesaColunaC); // Coluna C
+
+            fetch(urlForm, {
+                method: "POST",
+                mode: "no-cors",
+                body: formData
+            }).then(() => {
+                console.log("Mensagem enviada para a planilha.");
+            }).catch((err) => {
+                console.error("Erro ao enviar mensagem:", err);
+            });
+            // ------------------------------------------------
+
             exibirAlerta("Observação enviada!");
             fecharModalMensagem();
         } else {
@@ -1015,11 +1062,49 @@
     }
 
     function chamarGarcom() {
+        // --- LÓGICA DE ENVIO PARA O GOOGLE FORMULÁRIO (CHAMAR GARÇOM) ---
+        const urlForm = "https://docs.google.com/forms/d/e/1FAIpQLSdqJeSChWOP4EhrJZO3T2HERuGgU9Tjax7GVM-pTH0MBpVXGw/formResponse";
+        const idMesaColunaC = 100 + mesaAtual;
+        
+        const formData = new FormData();
+        formData.append("entry.258691053", "Garson"); // Coluna G
+        formData.append("entry.1646513792", idMesaColunaC); // Coluna C
+
+        fetch(urlForm, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        }).then(() => {
+            console.log("Solicitação de garçom enviada.");
+        }).catch((err) => {
+            console.error("Erro ao solicitar garçom:", err);
+        });
+        // ------------------------------------------------
+
         exibirAlerta("Garçom solicitado para a Mesa " + mesaAtual);
     }
 
     /* Alteração solicitada: Função de Pagamento com Loader e Confirmação */
     function alertaPagamento() {
+        // --- LÓGICA DE ENVIO PARA O GOOGLE FORMULÁRIO (PEDIR CONTA) ---
+        const urlForm = "https://docs.google.com/forms/d/e/1FAIpQLSdqJeSChWOP4EhrJZO3T2HERuGgU9Tjax7GVM-pTH0MBpVXGw/formResponse";
+        const idMesaColunaC = 100 + mesaAtual;
+        
+        const formData = new FormData();
+        formData.append("entry.734982378", "Conta"); // Coluna E
+        formData.append("entry.1646513792", idMesaColunaC); // Coluna C
+
+        fetch(urlForm, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        }).then(() => {
+            console.log("Solicitação de conta enviada.");
+        }).catch((err) => {
+            console.error("Erro ao solicitar conta:", err);
+        });
+        // ------------------------------------------------
+
         const modal = document.getElementById('modal-processando-pagamento');
         const loader = document.getElementById('payment-loader');
         const check = document.getElementById('payment-check');
