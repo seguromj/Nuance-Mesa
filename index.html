@@ -4,282 +4,1083 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futuristic Dashboard</title>
+    <title>Nuance Controle de Mesas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
         :root {
-            --primary-neon: #00f2ff;
-            --secondary-neon: #7000ff;
-            --bg-dark: #050505;
-            --glass: rgba(255, 255, 255, 0.1);
+            --primary: #1a1a1a;
+            --accent: #d4af37; 
+            --bg: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: white;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .mesa-btn {
+            background: var(--white);
+            border: 1px solid #eee;
+            padding: 30px 20px;
+            border-radius: 12px;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            overflow-x: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
         }
 
-        h1 {
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            text-shadow: 0 0 10px var(--primary-neon);
+        .mesa-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .mesa-btn i {
+            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .mesa-btn span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .modal-fullscreen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--white);
+            z-index: 1000;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .btn-lock-exit {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: 1px solid #ddd;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 10px;
+            color: #ccc;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .btn-lock-exit:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .modal-content-area {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px; 
+            padding-bottom: 100px;
+        }
+
+        .header-mesa-info {
+            text-align: center;
             margin-bottom: 20px;
         }
 
-        /* --- CAMPO DE IDS DA PLANILHA --- */
-        .id-monitor {
-            width: 80%;
-            max-width: 580px;
-            min-height: 80px; /* Garante que o campo tenha altura */
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid var(--primary-neon);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 30px;
-            text-align: center;
-            box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.2);
-            overflow: hidden;
-        }
-        .id-monitor label {
-            display: block;
+        .btn-add-product {
+            margin-top: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
             font-size: 0.8rem;
-            text-transform: uppercase;
-            color: var(--primary-neon);
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        #lista-ids {
-            font-family: 'Courier New', monospace;
-            font-size: 1.1rem;
-            word-wrap: break-word;
-            color: #fff;
-            text-shadow: 0 0 5px #fff;
-        }
-
-        /* Container dos Cards */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            padding: 20px;
-        }
-
-        /* Estilo dos Cards */
-        .card {
-            width: 100px;
-            height: 100px;
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .btn-add-product:hover {
+            background: var(--accent);
+        }
+
+        .carousel-section {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .carousel-title {
+            font-size: 1.2rem;
+            margin: 25px 0 10px 0;
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .carousel-track {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px 0 30px 0;
+            scrollbar-width: thin;
+        }
+
+        .product-card {
+            min-width: 220px;
+            background: #fff;
+            border: 1px solid #eee;
             border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .card:hover {
-            transform: scale(1.1) translateY(-5px);
-            border-color: var(--primary-neon);
-            box-shadow: 0 0 20px var(--primary-neon);
-            color: var(--primary-neon);
+        .product-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #f0f0f0;
         }
 
-        /* --- ANIMAÇÃO PISCAR (ADICIONADO) --- */
-        .blink {
-            animation: alert-blink 0.6s infinite alternate;
-            border-color: var(--primary-neon) !important;
-        }
-
-        @keyframes alert-blink {
-            from { 
-                box-shadow: 0 0 5px var(--primary-neon); 
-                background: var(--glass);
-            }
-            to { 
-                box-shadow: 0 0 30px var(--primary-neon); 
-                background: rgba(0, 242, 255, 0.3);
-            }
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
+        .footer-fixo {
             position: fixed;
-            z-index: 1000;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: var(--white);
+            height: 80px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 1100;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .footer-item i {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+
+        .footer-item span {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .footer-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .btn-footer-pagar {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 30px;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+            z-index: 3000;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        #password-modal, #modal-mensagem, #modal-pagamento-detalhe, #modal-pix-detalhe, #modal-comprovante-final, #modal-processando-pagamento {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
             backdrop-filter: blur(8px);
+            z-index: 2500;
             align-items: center;
             justify-content: center;
         }
 
-        .modal-content {
-            background: linear-gradient(135deg, rgba(20,20,20,1) 0%, rgba(40,40,40,1) 100%);
-            padding: 50px;
-            border-radius: 20px;
-            border: 1px solid var(--secondary-neon);
+        #modal-pagamento-detalhe, #modal-pix-detalhe, #modal-comprovante-final {
+            background: var(--white);
+            padding: 40px;
+            flex-direction: column;
             text-align: center;
-            width: 80%;
-            max-width: 600px;
-            box-shadow: 0 0 50px rgba(112, 0, 255, 0.3);
-            animation: modalIn 0.4s ease-out;
+            overflow-y: auto;
         }
 
-        @keyframes modalIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        /* Estilos Novos para o Modal de Carregamento */
+        .loader-container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .modal-content h2 {
-            font-size: 3rem;
-            margin-bottom: 30px;
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        .action-btn {
-            background: transparent;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .check-icon {
+            font-size: 4rem;
+            color: #28a745;
+            margin-bottom: 20px;
+            display: none;
+        }
+        /* Fim estilos novos */
+
+        .password-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .password-card textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            resize: none;
+        }
+
+        .password-card h3 { margin-bottom: 25px; font-weight: 300; text-transform: uppercase; letter-spacing: 1px; }
+
+        .password-card input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 8px;
+            outline: none;
+        }
+
+        .btn-confirm {
+            background: var(--primary);
             color: white;
-            border: 2px solid var(--primary-neon);
-            padding: 15px 40px;
-            font-size: 1rem;
-            font-weight: bold;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
             text-transform: uppercase;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s;
-            box-shadow: 0 0 10px var(--primary-neon);
         }
 
-        .action-btn:hover {
-            background: var(--primary-neon);
-            color: black;
-            box-shadow: 0 0 30px var(--primary-neon);
-        }
-
-        .close-btn {
+        .btn-cancel {
+            background: none;
+            border: none;
             margin-top: 20px;
-            display: block;
-            color: #aaa;
+            color: #999;
             cursor: pointer;
+            font-size: 0.85rem;
             text-decoration: underline;
         }
 
-        @media (max-width: 600px) {
-            .grid-container { grid-template-columns: repeat(2, 1fr); }
+        #modal-carrinho {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
         }
+
+        .carrinho-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .cart-item img {
+            width: 60px; height: 60px; border-radius: 8px; object-fit: cover;
+        }
+
+        .cart-item-info { flex: 1; }
+        .cart-item-info h4 { font-size: 0.9rem; }
+        .cart-item-info p { color: var(--accent); font-weight: 600; }
+
+        .cart-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-qty {
+            background: #eee; border: none; width: 25px; height: 25px; border-radius: 5px; cursor: pointer;
+        }
+
+        .btn-remove {
+            color: #ff4d4d; border: none; background: none; cursor: pointer; font-size: 1.2rem; margin-left: 10px;
+        }
+
+        .cart-footer {
+            margin-top: 30px;
+            padding-bottom: 100px;
+        }
+
+        .total-container {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: right;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-msg-cozinha {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-cozinha {
+            width: 100%;
+            padding: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .fusca-section {
+            margin-top: 40px;
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .fusca-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos do NOVO Modal de Agradecimento */
+        #modal-agradecimento {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--white);
+            z-index: 3000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .agradecimento-content {
+            max-width: 600px;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .agradecimento-content i {
+            font-size: 5rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .agradecimento-content h2 {
+            font-weight: 300;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .agradecimento-content p {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .footer-agradecimento {
+            position: fixed;
+            bottom: 30px;
+            width: 100%;
+            padding: 0 40px;
+            left: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-continua-mesa {
+            background: var(--primary);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 35px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .btn-continua-mesa:hover {
+            background: var(--accent);
+            transform: scale(1.05);
+        }
+
+        /* --- NOVAS ANIMAÇÕES PARA ADICIONAR AO CARRINHO --- */
+        @keyframes btnClickPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.92); background-color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes cartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); color: var(--accent); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-btn-click {
+            animation: btnClickPulse 0.3s ease-out;
+        }
+
+        .animate-cart-pop {
+            animation: cartPop 0.4s ease-out;
+        }
+
     </style>
 </head>
 <body>
 
-    <h1>PDV da Cozinha</h1>
+<header>
+    <h1>Gestão Exclusive</h1>
+    <p>Selecione uma mesa para iniciar</p>
+</header>
 
-    <div class="id-monitor">
-        <label>Garson Ativo</label>
-        <div id="lista-ids">Sincronizando...</div>
-    </div>
+<div class="container" id="grid-mesas"></div>
 
-    <div class="grid-container">
-        <div class="card" id="1" onclick="openModal(1)">1</div>
-        <div class="card" id="2" onclick="openModal(2)">2</div>
-        <div class="card" id="3" onclick="openModal(3)">3</div>
-        <div class="card" id="4" onclick="openModal(4)">4</div>
-        <div class="card" id="5" onclick="openModal(5)">5</div>
-        <div class="card" id="6" onclick="openModal(6)">6</div>
-        <div class="card" id="7" onclick="openModal(7)">7</div>
-        <div class="card" id="8" onclick="openModal(8)">8</div>
-        <div class="card" id="9" onclick="openModal(9)">9</div>
-        <div class="card" id="10" onclick="openModal(10)">10</div>
-    </div>
+<div id="mesa-modal" class="modal-fullscreen">
+    <button class="btn-lock-exit" onclick="solicitarSaida()">
+        <i class="fas fa-lock"></i>
+    </button>
 
-    <div id="modalContainer" class="modal">
-        <div class="modal-content">
-            <h2 id="modalTitle">Card ID: 0</h2>
-            <p style="margin-bottom: 30px; opacity: 0.7;">Recebimento de Produtos</p>
-           
-            <a href="Receber-Pedidod.html">
-            <button class="action-btn">Executar Protocolo</button>
-            </a>
-            
-            <span class="close-btn" onclick="closeModal()">Visualizar</span>
+    <div class="modal-content-area">
+        <div class="header-mesa-info">
+            <h2 id="mesa-titulo" style="font-weight: 300; font-size: 2.5rem;">Mesa X</h2>
+        </div>
+
+        <div id="secao-cardapio" class="carousel-section">
+            <h3 class="carousel-title">Hambúrgueres</h3>
+            <div class="carousel-track">
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNtcGhBt_hHt52jGu9wgkcM7g_eAejpM4fXa2H-4qODItzG1hiUgDWL7P2&s=10" alt="H1"><h4>Classic Burger</h4><p>R$ 35.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Classic Burger', 35.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNtcGhBt_hHt52jGu9wgkcM7g_eAejpM4fXa2H-4qODItzG1hiUgDWL7P2&s=10', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5UNgAp0wLr-z4Bl8NRNauoyf-IICGf02_Z36F6GWZV5XXgx-N6jIVjDPD&s=10" alt="H2"><h4>Bacon Deluxe</h4><p>R$ 42.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Bacon Deluxe', 42.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5UNgAp0wLr-z4Bl8NRNauoyf-IICGf02_Z36F6GWZV5XXgx-N6jIVjDPD&s=10', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwQo2WQH405RjIN12WRNFZoOUgTbZ8U4xRmf45E41vVEyoQiNvk9AkxzVS&s=10" alt="H3"><h4>Cheese Master</h4><p>R$ 38.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Cheese Master', 38.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwQo2WQH405RjIN12WRNFZoOUgTbZ8U4xRmf45E41vVEyoQiNvk9AkxzVS&s=10', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu_fugy1Ky5oLxR0_0_C-kpdhR3dp4hVHKe7XOaJMnAXH7izHAVs-VqZu&s=10" alt="H4"><h4>Veggie Prime</h4><p>R$ 40.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Veggie Prime', 40.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu_fugy1Ky5oLxR0_0_C-kpdhR3dp4hVHKe7XOaJMnAXH7izHAVs-VqZu&s=10', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzOwHQSb9TUxrZcpV1gqIhsJayvzCu2zepbFLdGA5CWsThp0AqAMhcIeW5&s=10" alt="H5"><h4>Double Cheddar</h4><p>R$ 48.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Double Cheddar', 48.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzOwHQSb9TUxrZcpV1gqIhsJayvzCu2zepbFLdGA5CWsThp0AqAMhcIeW5&s=10', this)">Adicionar</button></div>
+            </div>
+
+            <h3 class="carousel-title">Sobremesas</h3>
+            <div class="carousel-track">
+                <div class="product-card"><img src="https://s2-redeglobo.glbimg.com/jhdQbGZSDuFaE7QWmwoKHJPcrJE=/0x0:1217x811/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_b58693ed41d04a39826739159bf600a0/internal_photos/bs/2019/2/0/EFZzWtSeAyVWFrqcuzdA/sobremesa-1.jpg" alt="S1"><h4>Petit Gâteau</h4><p>R$ 22.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Petit Gâteau', 28.00, 'https://s2-redeglobo.glbimg.com/jhdQbGZSDuFaE7QWmwoKHJPcrJE=/0x0:1217x811/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_b58693ed41d04a39826739159bf600a0/internal_photos/bs/2019/2/0/EFZzWtSeAyVWFrqcuzdA/sobremesa-1.jpg', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDEEI4hhocBUrHqQZye1Wo7A_DHIT3RQRUDZStekHQq_nrdZId_YQ0SNc&s=10" alt="S2"><h4>Cheesecake</h4><p>R$ 20.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Cheesecake', 26.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDEEI4hhocBUrHqQZye1Wo7A_DHIT3RQRUDZStekHQq_nrdZId_YQ0SNc&s=10', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://portalsabores.com.br/wp-content/uploads/2014/07/Petit-gateau.jpg" alt="S3"><h4>Brownie Ice</h4><p>R$ 24.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Brownie Ice', 24.00, 'https://portalsabores.com.br/wp-content/uploads/2014/07/Petit-gateau.jpg', this)">Adicionar</button></div>
+            </div>
+
+            <h3 class="carousel-title">Bebidas</h3>
+            <div class="carousel-track">
+                <div class="product-card"><img src="https://andinacocacola.vtexassets.com/arquivos/ids/157652/110255_COCA---CCO220ml.jpg?v=638404083624500000" alt="B1"><h4>Soda Artesanal</h4><p>R$ 12.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Soda Artesanal', 12.00, 'https://andinacocacola.vtexassets.com/arquivos/ids/157652/110255_COCA---CCO220ml.jpg?v=638404083624500000', this)">Adicionar</button></div>
+                <div class="product-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOuNXUFUgQGUGYA_8sJbn5XU2M6ZEXEKyBe96QTH7yfYM1VAeS_uBykgk&s=10" alt="B2"><h4>Suco Natural</h4><p>R$ 14.00</p><button class="btn-add-product" onclick="adicionarAoCarrinho('Suco Natural', 14.00, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOuNXUFUgQGUGYA_8sJbn5XU2M6ZEXEKyBe96QTH7yfYM1VAeS_uBykgk&s=10', this)">Adicionar</button></div>
+            </div>
         </div>
     </div>
 
-    <script>
-        const modal = document.getElementById("modalContainer");
-        const modalTitle = document.getElementById("modalTitle");
+    <footer class="footer-fixo">
+        <div class="footer-item" id="footer-cart-icon" onclick="abrirCarrinho()">
+            <i class="fas fa-shopping-basket"></i>
+            <span>Carrinho</span>
+            <div class="footer-badge" id="carrinho-count">0</div>
+        </div>
+        <div class="footer-item" onclick="chamarGarcom()">
+            <i class="fas fa-user-tie"></i>
+            <span>Garçom</span>
+        </div>
+        <button class="btn-footer-pagar" onclick="alertaPagamento()">
+            <i class="fas fa-cash-register"></i> Pedir Conta
+        </button>
+    </footer>
+</div>
 
-        function openModal(id) {
-            modalTitle.innerText = "Card ID: " + id;
-            modal.style.display = "flex";
+<div id="modal-carrinho">
+    <div class="carrinho-header">
+        <h2>Seu Pedido</h2>
+        <button onclick="fecharCarrinho()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">Voltar-&times;</button>
+    </div>
+    
+    <div id="itens-novos-lista"></div>
+
+    <div id="secao-fusca" class="fusca-section" style="display:none;">
+        <p class="fusca-title">Pedidos em Preparo</p>
+        <div id="itens-cozinha-lista"></div>
+    </div>
+
+    <div class="cart-footer">
+        <div class="total-container">
+            <button class="btn-msg-cozinha" onclick="abrirModalMensagem()"><i class="fas fa-comment"></i> Mensagem para cozinha</button>
+            <div>Total: R$ <span id="valor-total">0.00</span></div>
+        </div>
+        <button id="btn-envia-cozinha" class="btn-cozinha" onclick="enviarParaCozinha()">Enviar para a Cozinha</button>
+    </div>
+</div>
+
+<div id="password-modal">
+    <div class="password-card">
+        <h3 id="pw-title">Acesso Restrito</h3>
+        <input type="password" id="pw-input" placeholder="••••">
+        <button class="btn-confirm" onclick="validarSenha()">Entrar</button>
+        <button class="btn-cancel" onclick="cancelarSenha()">Cancelar</button>
+    </div>
+</div>
+
+<div id="modal-mensagem">
+    <div class="password-card">
+        <h3>Instruções para a Cozinha</h3>
+        <textarea id="txt-obs-cozinha" placeholder="Ex: Sem cebola, ponto da carne mal passado..."></textarea>
+        <button class="btn-confirm" onclick="enviarMensagemCozinha()">Enviar</button>
+        <button class="btn-cancel" onclick="fecharModalMensagem()">Cancelar</button>
+    </div>
+</div>
+
+<div id="modal-processando-pagamento">
+    <div class="loader-container">
+        <div id="payment-loader" class="spinner"></div>
+        <i id="payment-check" class="fas fa-check-circle check-icon"></i>
+        <h3 id="payment-msg" style="font-weight: 300; margin-bottom: 20px;">Processando solicitação...</h3>
+        <button id="btn-ok-pagamento" class="btn-confirm" style="display: none;" onclick="fecharModalProcessando()">Ok</button>
+    </div>
+</div>
+
+<div id="modal-agradecimento">
+    <div class="agradecimento-content">
+        <i class="fas fa-heart"></i>
+        <h2>Obrigado!</h2>
+        <p>Recebemos sua solicitação de pagamento. <br> Nossa equipe já foi notificada e está a caminho da sua mesa para finalizar tudo com o máximo de conforto.</p>
+        <p style="font-size: 0.9rem; font-style: italic;">Esperamos que sua experiência na <strong>Nuance</strong> esteja sendo incrível!</p>
+    </div>
+    <div class="footer-agradecimento">
+        <button class="btn-continua-mesa" onclick="fecharAgradecimento()">Continua na Mesa</button>
+    </div>
+</div>
+
+<div id="modal-pagamento-detalhe">
+    <h2 style="font-weight: 300; margin-bottom: 30px; color: var(--accent);">Pagamento da Conta</h2>
+    <div style="max-width: 500px; line-height: 1.6;">
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">
+            <i class="fas fa-cash-register" style="display: block; font-size: 3rem; margin-bottom: 15px; color: #333;"></i>
+            Se você deseja pagar em <strong>dinheiro ou cartão direto na máquina</strong>, por favor, dirija-se ao <strong>Caixa</strong>.
+        </p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="font-size: 1.1rem; margin-bottom: 20px;">Para pagar via <strong>PIX / QR CODE</strong>, utilize o botão abaixo:</p>
+        <button class="btn-confirm" style="background: var(--accent);" onclick="abrirModalPix()">Pagar por QR CODE</button>
+    </div>
+    <button class="btn-cancel" onclick="fecharModalPagamento()" style="font-size: 1rem; margin-top: 40px;">Voltar ao Menu</button>
+</div>
+
+<div id="modal-pix-detalhe">
+    <h2 style="font-weight: 300; margin-bottom: 20px; color: var(--accent);">Pagamento via PIX</h2>
+    
+    <div style="max-width: 500px; width: 100%;">
+        <p style="font-size: 1.1rem; margin-bottom: 15px;">Pix:</p>
+        <p style="font-size: 1.5rem; font-weight: 600; background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 20px;">62 995679219</p>
+        
+        <div style="margin-bottom: 25px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=62995679219" alt="QR Code Pix" style="width: 250px; height: 250px; border: 1px solid #eee; padding: 10px; border-radius: 10px;">
+        </div>
+
+        <button class="btn-confirm" style="background: #28a745;" onclick="abrirModalComprovante()">Já fiz o pagamento</button>
+        <button class="btn-cancel" onclick="fecharModalPix()" style="display: block; margin: 20px auto;">Voltar</button>
+    </div>
+</div>
+
+<div id="modal-comprovante-final">
+    <div style="max-width: 500px; width: 100%; text-align: center;">
+        <i class="fas fa-check-circle" style="font-size: 4rem; color: #28a745; margin-bottom: 20px;"></i>
+        <p style="font-size: 1.3rem; margin-bottom: 25px; font-weight: 400;">Nos enviei o comprovante 😊</p>
+        
+        <a href="https://wa.me/5562995679219" target="_blank" style="text-decoration: none;">
+            <button class="btn-confirm" style="background: #25D366; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Enviar via WhatsApp
+            </button>
+        </a>
+        
+        <button class="btn-cancel" onclick="fecharModalComprovante()" style="display: block; margin: 25px auto;">Voltar ao Início</button>
+    </div>
+</div>
+
+<div id="custom-alert" class="custom-alert"></div>
+
+<script>
+    let mesaAtual = null;
+    let modoSenha = ""; 
+    let mesaTentativa = null;
+    let carrinhoNovos = [];
+    let carrinhoCozinha = [];
+
+    const gridMesas = document.getElementById('grid-mesas');
+    for (let i = 1; i <= 20; i++) {
+        const btn = document.createElement('div');
+        btn.className = 'mesa-btn';
+        btn.innerHTML = `<i class="fas fa-utensils"></i><span>Mesa ${i}</span>`;
+        btn.onclick = () => abrirMesa(i);
+        gridMesas.appendChild(btn);
+    }
+
+    window.onload = () => {
+        const salvaMesa = localStorage.getItem('mesaAberta');
+        if (salvaMesa) {
+            mesaAtual = parseInt(salvaMesa);
+            document.getElementById('mesa-titulo').innerText = "Mesa " + mesaAtual;
+            document.getElementById('mesa-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            carregarCarrinhoLocal();
         }
+    }
 
-        function closeModal() {
-            modal.style.display = "none";
-        }
+    function abrirMesa(numero) {
+        modoSenha = "entrar";
+        mesaTentativa = numero;
+        document.getElementById('pw-title').innerText = "Senha da Mesa " + numero;
+        document.getElementById('password-modal').style.display = 'flex';
+        document.getElementById('pw-input').focus();
+    }
 
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
+    function solicitarSaida() {
+        modoSenha = "sair";
+        document.getElementById('pw-title').innerText = "Confirmar Saída";
+        document.getElementById('password-modal').style.display = 'flex';
+        document.getElementById('pw-input').focus();
+    }
+
+    function validarSenha() {
+        const input = document.getElementById('pw-input');
+        const num = modoSenha === "entrar" ? mesaTentativa : mesaAtual;
+        const senhaCorreta = "NU" + (100 + num);
+
+        if (input.value === senhaCorreta) {
+            if (modoSenha === "entrar") {
+                mesaAtual = mesaTentativa;
+                document.getElementById('mesa-titulo').innerText = "Mesa " + mesaAtual;
+                document.getElementById('mesa-modal').style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                localStorage.setItem('mesaAberta', mesaAtual);
+                carregarCarrinhoLocal();
+                exibirAlerta("Mesa " + mesaAtual + " Acessada");
+            } else {
+                document.getElementById('mesa-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+                limparTudo();
             }
+            fecharModalSenha();
+        } else {
+            exibirAlerta("Senha Inválida!");
+            input.value = "";
+        }
+    }
+
+    function limparTudo() {
+        localStorage.removeItem('mesaAberta');
+        localStorage.removeItem('carrinhoNovos_' + mesaAtual);
+        localStorage.removeItem('localStorage.getItem_mesaAberta'); // Linha original mantida
+        localStorage.removeItem('carrinhoCozinha_' + mesaAtual);
+        mesaAtual = null;
+        carrinhoNovos = [];
+        carrinhoCozinha = [];
+        atualizarCarrinhoBadge();
+    }
+
+    function salvarCarrinhoLocal() {
+        if(mesaAtual) {
+            localStorage.setItem('carrinhoNovos_' + mesaAtual, JSON.stringify(carrinhoNovos));
+            localStorage.setItem('carrinhoCozinha_' + mesaAtual, JSON.stringify(carrinhoCozinha));
+        }
+    }
+
+    function carregarCarrinhoLocal() {
+        if(mesaAtual) {
+            const novos = localStorage.getItem('carrinhoNovos_' + mesaAtual);
+            const cozinha = localStorage.getItem('carrinhoCozinha_' + mesaAtual);
+            carrinhoNovos = novos ? JSON.parse(novos) : [];
+            carrinhoCozinha = cozinha ? JSON.parse(cozinha) : [];
+            atualizarCarrinhoBadge();
+        }
+    }
+
+    function fecharModalSenha() {
+        document.getElementById('password-modal').style.display = 'none';
+        document.getElementById('pw-input').value = "";
+    }
+
+    function cancelarSenha() {
+        fecharModalSenha();
+    }
+
+    function abrirModalMensagem() {
+        document.getElementById('modal-mensagem').style.display = 'flex';
+    }
+
+    function fecharModalMensagem() {
+        document.getElementById('modal-mensagem').style.display = 'none';
+        document.getElementById('txt-obs-cozinha').value = "";
+    }
+
+    function enviarMensagemCozinha() {
+        const msg = document.getElementById('txt-obs-cozinha').value;
+        if(msg.trim() !== "") {
+            exibirAlerta("Observação enviada!");
+            fecharModalMensagem();
+        } else {
+            exibirAlerta("Digite sua mensagem primeiro.");
+        }
+    }
+
+    function adicionarAoCarrinho(nome, preco, img, elemento) {
+        // Gatilho da animação no botão
+        if (elemento) {
+            elemento.classList.add('animate-btn-click');
+            setTimeout(() => elemento.classList.remove('animate-btn-click'), 300);
         }
 
-        async function fetchSheetData() {
-            const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSLyfJ_DxYlM85wk6yabreWrfU6JPMY05-DWcbAvILym3bsNQsegVhTS5fkohmtwpWu7HzH6_4hoVLH/pub?output=tsv";
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Falha na resposta');
-                const data = await response.text();
-                
-                const rows = data.split('\n');
-                let columnEValues = [];
-
-                for (let i = 1; i < rows.length; i++) {
-                    const columns = rows[i].split('\t');
-                    if (columns[2] && columns[2].trim() !== "") { 
-                        columnEValues.push(columns[2].trim());
-                    }
-                }
-
-                const result = columnEValues.reverse().join(' — ');
-                document.getElementById('lista-ids').innerText = result || "Aguardando dados...";
-
-                /* --- LÓGICA PARA PISCAR CARDS --- */
-                // Remove o efeito de todos primeiro para atualizar
-                document.querySelectorAll('.card').forEach(card => card.classList.remove('blink'));
-                
-                // Se o número do ID estiver presente na lista da Coluna E, faz o card piscar
-                columnEValues.forEach(val => {
-                    const targetCard = document.getElementById(val);
-                    if (targetCard) {
-                        targetCard.classList.add('blink');
-                    }
-                });
-
-            } catch (error) {
-                console.error("Erro:", error);
-                document.getElementById('lista-ids').innerText = "Erro ao conectar com a planilha.";
-            }
+        // Gatilho da animação no ícone do carrinho no rodapé
+        const cartIcon = document.getElementById('footer-cart-icon');
+        if (cartIcon) {
+            cartIcon.classList.add('animate-cart-pop');
+            setTimeout(() => cartIcon.classList.remove('animate-cart-pop'), 400);
         }
 
-        fetchSheetData();
-        setInterval(fetchSheetData, 2000); // Atualiza a cada 300ms
-    </script>
+        const itemExistente = carrinhoNovos.find(item => item.nome === nome);
+        if(itemExistente) {
+            itemExistente.qtd++;
+        } else {
+            carrinhoNovos.push({ nome, preco, img, qtd: 1 });
+        }
+        salvarCarrinhoLocal();
+        atualizarCarrinhoBadge();
+        exibirAlerta(nome + " adicionado!");
+    }
+
+    function atualizarCarrinhoBadge() {
+        const totalItens = carrinhoNovos.length + carrinhoCozinha.length;
+        document.getElementById('carrinho-count').innerText = totalItens;
+    }
+
+    function abrirCarrinho() {
+        renderizarCarrinho();
+        document.getElementById('modal-carrinho').style.display = 'block';
+    }
+
+    function fecharCarrinho() {
+        document.getElementById('modal-carrinho').style.display = 'none';
+    }
+
+    function renderizarCarrinho() {
+        const listaNovos = document.getElementById('itens-novos-lista');
+        const listaCozinha = document.getElementById('itens-cozinha-lista');
+        const secaoFusca = document.getElementById('secao-fusca');
+        let totalGeral = 0;
+
+        listaNovos.innerHTML = "";
+        carrinhoNovos.forEach((item, index) => {
+            totalGeral += item.preco * item.qtd;
+            const imgUrl = item.img && item.img !== "" ? item.img : 'https://via.placeholder.com/60';
+            listaNovos.innerHTML += `
+                <div class="cart-item">
+                    <img src="${imgUrl}" alt="${item.nome}">
+                    <div class="cart-item-info">
+                        <h4>${item.nome}</h4>
+                        <p>R$ ${item.preco.toFixed(2)}</p>
+                    </div>
+                    <div class="cart-controls">
+                        <button class="btn-qty" onclick="alterarQtd(${index}, -1)">-</button>
+                        <span>${item.qtd}</span>
+                        <button class="btn-qty" onclick="alterarQtd(${index}, 1)">+</button>
+                    </div>
+                    <button class="btn-remove" onclick="removerItem(${index})"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+        });
+
+        listaCozinha.innerHTML = "";
+        if(carrinhoCozinha.length > 0) {
+            secaoFusca.style.display = "block";
+            carrinhoCozinha.forEach(item => {
+                totalGeral += item.preco * item.qtd;
+                const imgUrlCozinha = item.img && item.img !== "" ? item.img : 'https://via.placeholder.com/60';
+                listaCozinha.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${imgUrlCozinha}" alt="${item.nome}">
+                        <div class="cart-item-info">
+                            <h4>${item.nome}</h4>
+                            <p>R$ ${item.preco.toFixed(2)}</p>
+                        </div>
+                        <div style="font-size:0.8rem; font-weight:bold;">Qtd: ${item.qtd}</div>
+                    </div>
+                `;
+            });
+        } else {
+            secaoFusca.style.display = "none";
+        }
+
+        document.getElementById('valor-total').innerText = totalGeral.toFixed(2);
+        document.getElementById('btn-envia-cozinha').style.display = carrinhoNovos.length > 0 ? "block" : "none";
+    }
+
+    function alterarQtd(index, delta) {
+        carrinhoNovos[index].qtd += delta;
+        if(carrinhoNovos[index].qtd <= 0) {
+            removerItem(index);
+        } else {
+            salvarCarrinhoLocal();
+            renderizarCarrinho();
+        }
+    }
+
+    function removerItem(index) {
+        carrinhoNovos.splice(index, 1);
+        salvarCarrinhoLocal();
+        renderizarCarrinho();
+        atualizarCarrinhoBadge();
+    }
+
+    function enviarParaCozinha() {
+        if(carrinhoNovos.length === 0) return;
+
+        // --- LÓGICA DE ENVIO PARA O GOOGLE FORMULÁRIO ---
+        const urlForm = "https://docs.google.com/forms/d/e/1FAIpQLSdqJeSChWOP4EhrJZO3T2HERuGgU9Tjax7GVM-pTH0MBpVXGw/formResponse";
+        
+        // Monta a string com todos os itens do pedido
+        let resumoPedido = "";
+        carrinhoNovos.forEach(item => {
+            resumoPedido += `${item.qtd}x ${item.nome} (R$ ${item.preco.toFixed(2)})\n`;
+        });
+
+        // Gerar um ID de Mesa baseado no número atual (ex: 101, 102...)
+        const idMesaColunaC = 100 + mesaAtual;
+        const nomeMesaColunaD = "Mesa" + mesaAtual;
+
+        const formData = new FormData();
+        formData.append("entry.2145300487", resumoPedido); // Coluna B: Pedidos
+        formData.append("entry.1646513792", idMesaColunaC); // Coluna C: ID da Mesa
+        formData.append("entry.1446427529", nomeMesaColunaD); // Coluna D: Nome da Mesa
+
+        // Envia os dados silenciosamente
+        fetch(urlForm, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        }).then(() => {
+            console.log("Pedido enviado com sucesso para a planilha.");
+        }).catch((err) => {
+            console.error("Erro ao enviar pedido:", err);
+        });
+        // ------------------------------------------------
+
+        carrinhoCozinha = [...carrinhoCozinha, ...carrinhoNovos];
+        carrinhoNovos = [];
+        salvarCarrinhoLocal();
+        exibirAlerta("Pedido enviado para a cozinha!");
+        renderizarCarrinho();
+        atualizarCarrinhoBadge();
+    }
+
+    function chamarGarcom() {
+        exibirAlerta("Garçom solicitado para a Mesa " + mesaAtual);
+    }
+
+    /* Alteração solicitada: Função de Pagamento com Loader e Confirmação */
+    function alertaPagamento() {
+        const modal = document.getElementById('modal-processando-pagamento');
+        const loader = document.getElementById('payment-loader');
+        const check = document.getElementById('payment-check');
+        const msg = document.getElementById('payment-msg');
+        const btnOk = document.getElementById('btn-ok-pagamento');
+
+        // Resetar estado inicial do modal
+        loader.style.display = 'block';
+        check.style.display = 'none';
+        btnOk.style.display = 'none';
+        msg.innerText = "Processando solicitação...";
+        modal.style.display = 'flex';
+
+        // Simular carregamento por 2 segundos
+        setTimeout(() => {
+            loader.style.display = 'none';
+            check.style.display = 'block';
+            msg.innerText = "Estamos indo até você para Finalizarmos o seu pagamento.";
+            btnOk.style.display = 'block';
+        }, 2000);
+    }
+
+    /* Alteração solicitada: Abre o modal de agradecimento ao clicar em OK */
+    function fecharModalProcessando() {
+        document.getElementById('modal-processando-pagamento').style.display = 'none';
+        document.getElementById('modal-agradecimento').style.display = 'flex';
+    }
+
+    function fecharAgradecimento() {
+        document.getElementById('modal-agradecimento').style.display = 'none';
+    }
+
+    function fecharModalPagamento() {
+        document.getElementById('modal-pagamento-detalhe').style.display = 'none';
+    }
+
+    function abrirModalPix() {
+        fecharModalPagamento();
+        document.getElementById('modal-pix-detalhe').style.display = 'flex';
+    }
+
+    function fecharModalPix() {
+        document.getElementById('modal-pix-detalhe').style.display = 'none';
+    }
+
+    function abrirModalComprovante() {
+        fecharModalPix();
+        document.getElementById('modal-comprovante-final').style.display = 'flex';
+    }
+
+    function fecharModalComprovante() {
+        document.getElementById('modal-comprovante-final').style.display = 'none';
+    }
+
+    function exibirAlerta(msg) {
+        const alertBox = document.getElementById('custom-alert');
+        alertBox.innerText = msg;
+        alertBox.style.display = 'block';
+        setTimeout(() => { alertBox.style.display = 'none'; }, 3000);
+    }
+</script>
 
 </body>
 </html>
